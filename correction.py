@@ -2,7 +2,6 @@
 
 # function to generate fixations at each word
 def generate_fixations_left_skip_regression(aois_with_tokens):
-    
     fixations = []
     word_count = 0
     skip_count = 0
@@ -83,7 +82,7 @@ def error_noise(y_noise_probability, y_noise, duration_noise, fixations):
 
 # shift
 
-def error_slope(y_slope_probability, y_slope, duration_slope, fixations):
+def error_slope(y_slope, fixations):
     ''' creates a downward slope of fixation errors '''
     result = []
 
@@ -93,14 +92,44 @@ def error_slope(y_slope_probability, y_slope, duration_slope, fixations):
 
         x, y = fix[0], fix[1]
 
-        if random.random() < y_slope_probability:
-            result.append([x, y+ slope + random.randint(0, y_slope), duration_slope])
-        else:
-            result.append([x,y+slope, fix[2]])
+        
+        result.append([x,y+slope, fix[2]])
+
+        slope += y_slope
 
     return result
 
+
+def error_shift(y_shift, line_limit, fixations):
+    ''' creates a downward shift of fixation errors '''
+    result = []
+
+    shift = 0
+
+    line = 0
+
+    for fix in fixations:
+        x, y = fix[0], fix[1]
+
+        if line >= line_limit:
+            line = 0
+            result.append([x,y+shift, fix[2]])
+        else:
+            result.append([x, y, fix[2]])
+
+        shift += y_shift
+    
+    return result
+
+def error_within_line_regress(x_shift_probability, shift_duration, fixations):
+
+    # Determine how long a line is
+    # Keep track of x values in fixations in line
+    # Randomly select a previous x value
+    # Append it to the result
+    pass
         
+
 
 
 
