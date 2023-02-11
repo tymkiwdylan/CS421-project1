@@ -121,13 +121,44 @@ def error_shift(y_shift, line_limit, fixations):
     
     return result
 
-def error_within_line_regress(x_shift_probability, shift_duration, fixations):
+def error_within_line_regress(x_shift_probability, shift_duration,fixations, line_break = 10):
 
     # Determine how long a line is
     # Keep track of x values in fixations in line
     # Randomly select a previous x value
     # Append it to the result
+
+    result = []
+
+    line = []
+
+    for fix in fixations:
+        x,y, duration = fix[0], fix[1], fix[2]
+
+        if len(line) >= line_break:
+            line = []
+
+        line.append(x)
+
+        duration_error = int(duration * shift_duration)
+
+        duration += random.randint(-duration_error, duration_error)
+
+        if duration < 0:
+            duration *= -1
+        
+        if random.random() < x_shift_probability:
+            result.append([line[random.randint(0, len(line))], y, duration])
+        else:
+            result.append(x,y,fix[2])
+
+    return result
+
+def error_between_line_regress(fixations, line_break = 10):
     pass
+
+
+    
         
 
 
