@@ -83,6 +83,26 @@ def error_noise(y_noise_probability, y_noise, duration_noise, fixations):
 
 # shift
 
+def error_slope(y_slope_probability, y_slope, duration_slope, fixations):
+    ''' creates a downward slope of fixation errors '''
+    result = []
+
+    slope = 0
+
+    for fix in fixations:
+
+        x, y = fix[0], fix[1]
+
+        if random.random() < y_slope_probability:
+            result.append([x, y+ slope + random.randint(0, y_slope), duration_slope])
+        else:
+            result.append([x,y+slope, fix[2]])
+
+    return result
+
+        
+
+
 
 
 # droop
