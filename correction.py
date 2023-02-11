@@ -101,6 +101,7 @@ def error_slope(y_slope, fixations):
 
 
 def error_shift(y_shift, line_limit, fixations):
+
     ''' creates a downward shift of fixation errors '''
     result = []
 
@@ -121,22 +122,28 @@ def error_shift(y_shift, line_limit, fixations):
     
     return result
 
-def error_within_line_regress(x_shift_probability, shift_duration,fixations, line_break = 10):
+def map_lines(lines, fixations):
 
-    # Determine how long a line is
-    # Keep track of x values in fixations in line
-    # Randomly select a previous x value
-    # Append it to the result
+    result = {}
+
+    for fix in fixations:
+        result[min(lines, key=lambda x:abs(x-fix[1]))] = fix[1]
+    
+    return result
+
+
+def error_within_line_regress(x_shift_probability, shift_duration, lines):
+
+    # map fixation to line
+    # for each line, have a probability that there will be a regression
 
     result = []
 
-    line = []
 
-    for fix in fixations:
+    for line in lines:
         x,y, duration = fix[0], fix[1], fix[2]
 
-        if len(line) >= line_break:
-            line = []
+        
 
         line.append(x)
 
