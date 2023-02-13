@@ -122,12 +122,14 @@ def error_shift(y_shift, line_limit, fixations):
     
     return result
 
+from collections import defaultdict
+
 def map_lines(lines, fixations):
 
-    result = {}
+    result = defaultdict(list)
 
     for fix in fixations:
-        result[min(lines, key=lambda x:abs(x-fix[1]))] = fix[1]
+        result[min(lines, key=lambda x:abs(x-fix[1]))].append(fix)
     
     return result
 
@@ -141,28 +143,49 @@ def error_within_line_regress(x_shift_probability, shift_duration, lines):
 
 
     for line in lines:
-        x,y, duration = fix[0], fix[1], fix[2]
 
-        
+        words = []
 
-        line.append(x)
+        for fix in line[0]:
+            x,y, duration = fix[0], fix[1], fix[2]
 
-        duration_error = int(duration * shift_duration)
+            words.append(x)
+            duration_error = int(duration * shift_duration)
 
-        duration += random.randint(-duration_error, duration_error)
+            duration += random.randint(-duration_error, duration_error)
 
-        if duration < 0:
-            duration *= -1
-        
-        if random.random() < x_shift_probability:
-            result.append([line[random.randint(0, len(line))], y, duration])
-        else:
-            result.append(x,y,fix[2])
+            if duration < 0:
+                duration *= -1
+            
+            if random.random() < x_shift_probability:
+                result.append([words[random.randint(0, len(words))], y, duration])
+            else:
+                result.append(x,y,fix[2])
 
     return result
 
-def error_between_line_regress(fixations, line_break = 10):
-    pass
+def error_between_line_regress(shift_probability, shift_duration, lines):
+    
+    result = []
+
+    for line in lines:
+        for fix in line[0]:
+
+            x, y, duration = fix[0], fix[1], fix[2]
+
+            duration_error = int(duration * shift_duration)
+
+            duration += random.randint(-duration_error, duration_error)
+
+            if duration < 0:
+                duration *= -1
+            
+            if random.random() < shift_probability:
+                result.append(x, lines[random.randint(0, len(lines))][0][1], duration)
+            else:
+                result.append(x,y,fix[2])
+
+    return result
 
 
     
