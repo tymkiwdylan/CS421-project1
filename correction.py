@@ -141,12 +141,11 @@ def error_within_line_regress(x_shift_probability, shift_duration, lines):
 
     result = []
 
-
     for line in lines:
 
         words = []
-
-        for fix in line[0]:
+        
+        for fix in lines[line]:
             x,y, duration = fix[0], fix[1], fix[2]
 
             words.append(x)
@@ -158,9 +157,9 @@ def error_within_line_regress(x_shift_probability, shift_duration, lines):
                 duration *= -1
             
             if random.random() < x_shift_probability:
-                result.append([words[random.randint(0, len(words))], y, duration])
+                result.append([words[random.randint(0, len(words)-1)], y, duration])
             else:
-                result.append(x,y,fix[2])
+                result.append([x,y,fix[2]])
 
     return result
 
@@ -169,8 +168,11 @@ def error_between_line_regress(shift_probability, shift_duration, lines):
     result = []
 
     for line in lines:
-        for fix in line[0]:
-
+        lines_to_use = []
+        words = []
+        for fix in lines[line]:
+            lines_to_use.append(line)
+            words.append(fix[0])
             x, y, duration = fix[0], fix[1], fix[2]
 
             duration_error = int(duration * shift_duration)
@@ -181,9 +183,9 @@ def error_between_line_regress(shift_probability, shift_duration, lines):
                 duration *= -1
             
             if random.random() < shift_probability:
-                result.append(x, lines[random.randint(0, len(lines))][0][1], duration)
+                result.append([words[random.randint(0, len(words)-1)], lines_to_use[random.randint(0, len(lines_to_use)-1)], duration])
             else:
-                result.append(x,y,fix[2])
+                result.append([x,y,fix[2]])
 
     return result
 
